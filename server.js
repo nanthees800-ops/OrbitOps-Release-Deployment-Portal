@@ -1799,4 +1799,8 @@ if (require.main === module) {
   });
 }
 
-module.exports = { server, calculateReleaseRisk, executeDeploymentWorkflow, triggerRollback };
+module.exports = Object.assign(server, {
+    calculateReleaseRisk,
+    executeDeploymentWorkflow,
+    triggerRollback
+});
