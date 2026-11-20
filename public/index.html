@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrbitOps — Enterprise Release & Deployment Management Portal</title>
+  <link rel="stylesheet" href="/css/portal.css">
+  <!-- Chart.js for DORA and Telemetry Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Global App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">🪐</div>
+      <div class="brand-text">
+        <h1>
+          OrbitOps
+          <span class="brand-badge">Enterprise v3.4</span>
+        </h1>
+        <div class="brand-sub">Continuous Delivery & Fleet Orchestration Platform</div>
+      </div>
+    </div>
+
+    <div class="header-center-info">
+      <div class="live-indicator">
+        <span class="pulse-dot"></span>
+        FLEET OPERATIONAL • 6/6 REGIONS SYNCHRONIZED
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="openDeployModal()">
+        <span>🚀</span> <span class="btn-text-hide">Trigger Deploy</span>
+      </button>
+      <button class="btn btn-secondary" onclick="openCreateReleaseModal()">
+        <span>📋</span> <span class="btn-text-hide">New Release</span>
+      </button>
+      <button class="btn btn-danger" onclick="openRollbackModal()">
+        <span>🚨</span> <span class="btn-text-hide">Emergency Rollback</span>
+      </button>
+      <button class="btn btn-icon" onclick="toggleTheme()" title="Toggle Theme">
+        🌓
+      </button>
+      <button class="btn btn-icon" onclick="resetDemoData()" title="Reset Demo Data">
+        🔄
+      </button>
+      <a href="/api/export" class="btn btn-icon" title="Export Backup JSON" download>
+        💾
+      </a>
+    </div>
+  </header>
+
+  <!-- Sub Navigation / Tabs -->
+  <nav class="sub-nav">
+    <div class="nav-tabs">
+      <button class="tab-btn active" data-tab="overview">
+        📊 Mission Control
+      </button>
+      <button class="tab-btn" data-tab="environments">
+        🌐 Fleet & Drift Matrix
+      </button>
+      <button class="tab-btn" data-tab="deployments">
+        ⚡ Pipelines & Live Console
+      </button>
+      <button class="tab-btn" data-tab="releases">
+        📦 Release Trains
+      </button>
+      <button class="tab-btn" data-tab="approvals">
+        🛡️ CAB Governance
+        <span id="badge-cab-count" class="tab-badge badge-alert" style="display: none;">0</span>
+      </button>
+      <button class="tab-btn" data-tab="configs">
+        🔍 Config & Drift Auditor
+      </button>
+      <button class="tab-btn" data-tab="dora">
+        📈 DORA Analytics
+      </button>
+      <button class="tab-btn" data-tab="audit">
+        📜 Immutable Audit Trail
+      </button>
+    </div>
+
+    <div style="padding: 0.5rem 0;">
+      <input type="text" id="global-search" class="form-input" style="width: 200px; padding: 0.35rem 0.6rem; font-size: 0.78rem;" placeholder="Search releases, services...">
+    </div>
+  </nav>
+
+  <!-- Main Application Body -->
+  <main class="app-main">
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: MISSION CONTROL (OVERVIEW) -->
+    <!-- ================================================================= -->
+    <section id="tab-overview" class="tab-content active">
+
+      <!-- DORA Headline KPI Hero Grid -->
+      <div class="grid-4">
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Deployment Frequency</span>
+            <span class="kpi-tier-badge">Elite Tier</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpi-df" class="kpi-value">16.4</span>
+            <span class="kpi-unit">deploys / week</span>
+          </div>
+          <div class="kpi-subtext">↑ 14% vs last 30d window (Target: &gt; 7/wk)</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Lead Time for Changes</span>
+            <span class="kpi-tier-badge">Elite Tier</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpi-lt" class="kpi-value">3.2h</span>
+            <span class="kpi-unit">commit-to-prod</span>
+          </div>
+          <div class="kpi-subtext">↓ 24m faster PR soak &amp; CI pipeline</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Change Failure Rate</span>
+            <span class="kpi-tier-badge">Elite Tier</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpi-cfr" class="kpi-value">1.4%</span>
+            <span class="kpi-unit">of rollouts</span>
+          </div>
+          <div class="kpi-subtext">Zero Tier-0 outages recorded this quarter</div>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Mean Time to Recovery</span>
+            <span class="kpi-tier-badge">Elite Tier</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpi-mttr" class="kpi-value">12.8m</span>
+            <span class="kpi-unit">MTTR</span>
+          </div>
+          <div class="kpi-subtext">Automated circuit breaker canary rollback</div>
+        </div>
+      </div>
+
+      <!-- Active Deployment Ticker -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div class="card-title">
+            <span>⚡</span> Active Deployment Pipeline &amp; Traffic Split
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Real-time Telemetry Engine</span>
+        </div>
+        <div class="card-body" id="overview-active-dep-box">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Fleet Environments Grid -->
+      <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 1.05rem; font-weight: 700;">🌐 Environment Fleet Health &amp; Freeze Controls</h2>
+        <span style="font-size: 0.78rem; color: var(--text-secondary);">6 Active Clusters Across Multi-Region Clouds</span>
+      </div>
+      <div class="grid-3" id="overview-fleet-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Recent Audit & System Events -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📜</span> Recent Deployment &amp; Governance Activity
+          </div>
+          <button class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" onclick="switchTab('audit')">View Full Audit Log</button>
+        </div>
+        <div class="card-body">
+          <div id="overview-audit-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: MULTI-ENVIRONMENT FLEET & DRIFT MATRIX -->
+    <!-- ================================================================= -->
+    <section id="tab-environments" class="tab-content">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>🌐</span> Multi-Environment Version Drift Matrix</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+              Compare deployed software versions across staging and production clusters to detect promotion drift.
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="openDeployModal()">Promote Service</button>
+        </div>
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr id="matrix-table-head-row">
+                <!-- Headers rendered by JS -->
+              </tr>
+            </thead>
+            <tbody id="matrix-table-body">
+              <!-- Matrix rows rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: PIPELINES & LIVE CONSOLE -->
+    <!-- ================================================================= -->
+    <section id="tab-deployments" class="tab-content">
+      
+      <!-- Live Console Detail View -->
+      <div id="deployment-console-view" class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <span class="live-indicator"><span class="pulse-dot"></span> LIVE CONSOLE</span>
+              <span id="console-title" style="margin-left: 0.5rem;">Select a deployment</span>
+            </div>
+            <div id="console-meta" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+              --
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" onclick="loadDeployments()">Refresh</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Stepper -->
+          <div id="console-stepper" class="pipeline-stepper">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Canary / Stage Controls -->
+          <div id="console-canary-controls" style="margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 6px;">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Terminal Logs -->
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+              </div>
+              <div class="terminal-title">live-telemetry-stdout.log</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">SSE Connected</div>
+            </div>
+            <div class="terminal-body" id="terminal-log-body">
+              <!-- Logs populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deployments History Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>⚡</span> Deployment History &amp; Executions</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary" onclick="openDeployModal()">Trigger New Deployment</button>
+          </div>
+        </div>
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Service &amp; Version</th>
+                <th>Environment</th>
+                <th>Strategy</th>
+                <th>Status</th>
+                <th>Started / Duration</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="deployments-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: RELEASE TRAIN & ROADMAP -->
+    <!-- ================================================================= -->
+    <section id="tab-releases" class="tab-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <div>
+          <h2 style="font-size: 1.1rem; font-weight: 700;">📦 Release Train Lifecycle &amp; Governance</h2>
+          <div style="font-size: 0.78rem; color: var(--text-secondary);">Manage SemVer release plans, pre-flight checklists, and automated changelogs.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateReleaseModal()">Create Release Plan</button>
+      </div>
+
+      <!-- Kanban Columns -->
+      <div class="grid-4" style="margin-bottom: 1.5rem;">
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-amber); margin-bottom: 0.6rem; text-transform: uppercase;">
+            🟡 In Review / Verification
+          </div>
+          <div id="board-col-in_review"></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 0.6rem; text-transform: uppercase;">
+            🔵 Approved / Staged
+          </div>
+          <div id="board-col-approved"></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.6rem; text-transform: uppercase;">
+            🟢 Released to Production
+          </div>
+          <div id="board-col-released"></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-rose); margin-bottom: 0.6rem; text-transform: uppercase;">
+            🔴 Rolled Back / Hotfix Required
+          </div>
+          <div id="board-col-rolled_back"></div>
+        </div>
+      </div>
+
+      <!-- Detailed Releases Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Release Artifact Registry</div>
+        </div>
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Title &amp; Service</th>
+                <th>Risk Assessment</th>
+                <th>Target Env</th>
+                <th>Status</th>
+                <th>Author / Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="releases-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 5: CHANGE ADVISORY BOARD (CAB) GOVERNANCE -->
+    <!-- ================================================================= -->
+    <section id="tab-approvals" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>🛡️</span> Change Advisory Board (CAB) &amp; Compliance Gates</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+              Enforce dual-authorization sign-offs, SOC2/ISO audit trails, and automated risk scoring for production cutovers.
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="loadApprovals()">Refresh Approvals</button>
+        </div>
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Gate ID</th>
+                <th>Release &amp; Target</th>
+                <th>Risk Level</th>
+                <th>Signatures Status</th>
+                <th>Gate Status</th>
+                <th>Requested By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="approvals-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 6: CONFIG & SECRET DRIFT AUDITOR -->
+    <!-- ================================================================= -->
+    <section id="tab-configs" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>🔍</span> Environment Variable &amp; Secret Drift Auditor</div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <select id="config-service-select" class="form-select" onchange="loadConfigs()">
+              <option value="svc-payments">Payment Gateway Bridge</option>
+              <option value="svc-auth">Auth &amp; OAuth2 Identity</option>
+            </select>
+            <select id="config-envA-select" class="form-select" onchange="loadConfigs()">
+              <option value="staging">Staging</option>
+              <option value="qa">QA</option>
+            </select>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+            <select id="config-envB-select" class="form-select" onchange="loadConfigs()">
+              <option value="prod-us">Production (US-East)</option>
+              <option value="prod-eu">Production (EU-Central)</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadConfigs()">Compare</button>
+          </div>
+        </div>
+
+        <div style="padding: 0.75rem 1.25rem; background: var(--bg-tertiary); font-size: 0.78rem;" id="config-diff-summary">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Config Key</th>
+                <th>Environment A</th>
+                <th>Environment B</th>
+                <th>Drift Status</th>
+              </tr>
+            </thead>
+            <tbody id="config-diff-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 7: DORA & PERFORMANCE ANALYTICS -->
+    <!-- ================================================================= -->
+    <section id="tab-dora" class="tab-content">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 700;">📈 DevOps Research &amp; Assessment (DORA) Metrics</h2>
+        <div style="font-size: 0.78rem; color: var(--text-secondary);">Continuous delivery engineering metrics, MTTR tracking, and stability benchmarks.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Deployment Frequency (6-Week Trend)</div>
+          </div>
+          <div class="card-body">
+            <canvas id="chart-df-trend" height="200"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Change Failure Rate Trend (%)</div>
+          </div>
+          <div class="card-body">
+            <canvas id="chart-cfr-trend" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Failure Root Cause Distribution</div>
+          </div>
+          <div class="card-body" style="display: flex; justify-content: center;">
+            <div style="max-width: 320px; width: 100%;">
+              <canvas id="chart-failure-causes"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Lead Time for Changes Pipeline Breakdown</div>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.82rem;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span>1. Coding &amp; Local Commits</span>
+                  <strong>1.2h (37%)</strong>
+                </div>
+                <div class="traffic-gauge"><div class="traffic-fill" style="width: 37%;"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span>2. Peer PR Review &amp; Linting</span>
+                  <strong>0.8h (25%)</strong>
+                </div>
+                <div class="traffic-gauge"><div class="traffic-fill" style="width: 25%;"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span>3. CI Build, Unit &amp; SAST Tests</span>
+                  <strong>0.4h (12%)</strong>
+                </div>
+                <div class="traffic-gauge"><div class="traffic-fill" style="width: 12%;"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span>4. Staging Soak &amp; E2E Smoke Probes</span>
+                  <strong>0.5h (16%)</strong>
+                </div>
+                <div class="traffic-gauge"><div class="traffic-fill" style="width: 16%;"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span>5. Production Canary Rollout Cutover</span>
+                  <strong>0.3h (10%)</strong>
+                </div>
+                <div class="traffic-gauge"><div class="traffic-fill" style="width: 10%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 8: AUDIT TRAIL -->
+    <!-- ================================================================= -->
+    <section id="tab-audit" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>📜</span> Immutable Audit Log &amp; Event Stream</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="/api/export" class="btn btn-secondary" download>Export Audit CSV / JSON</a>
+          </div>
+        </div>
+        <div class="card-body table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Environment</th>
+                <th>Details</th>
+                <th>Actor</th>
+              </tr>
+            </thead>
+            <tbody id="audit-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODALS -->
+  <!-- ================================================================= -->
+
+  <!-- Modal 1: Trigger Deployment -->
+  <div id="modal-deploy" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">🚀 Trigger Deployment Pipeline</h3>
+        <button class="modal-close" onclick="closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Target Service</label>
+          <select id="deploy-service-select" class="form-select">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Release Version (Tag / Digest)</label>
+          <input type="text" id="deploy-version-input" class="form-input" placeholder="e.g. v3.4.0">
+          <div class="form-help">Must match verified container image artifact signature.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Target Environment</label>
+          <select id="deploy-env-select" class="form-select">
+            <option value="dev">Development (us-east-1)</option>
+            <option value="qa">QA Integration (us-east-1)</option>
+            <option value="staging">Staging Pre-Prod (us-west-2)</option>
+            <option value="canary">Canary Slice (us-east-1)</option>
+            <option value="prod-us" selected>Production Primary (us-east-1)</option>
+            <option value="prod-eu">Production DR (eu-central-1)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deployment Strategy</label>
+          <select id="deploy-strategy-select" class="form-select">
+            <option value="canary" selected>Canary Rollout (10% ➔ 50% ➔ 100% with SLI evaluation)</option>
+            <option value="blue-green">Blue / Green Cluster Cutover (Zero Downtime)</option>
+            <option value="rolling">Rolling Pod Replacement (25% step)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; cursor: pointer;">
+            <input type="checkbox" id="deploy-bypass-freeze">
+            <span style="color: var(--accent-amber);">Emergency Bypass: Override Environment Freeze (Requires CAB authorization)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitDeploy()">Initiate Deployment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Create Release Plan -->
+  <div id="modal-create-release" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">📋 Create Release Plan &amp; Risk Assessment</h3>
+        <button class="modal-close" onclick="closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Microservice</label>
+          <select id="release-service-select" class="form-select">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 0;">
+          <div class="form-group">
+            <label class="form-label">Version (SemVer)</label>
+            <input type="text" id="release-version-input" class="form-input" placeholder="e.g. v3.5.0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Release Type</label>
+            <select id="release-type-select" class="form-select">
+              <option value="patch">Patch (Bugfix / Security)</option>
+              <option value="minor" selected>Minor (Feature Addition)</option>
+              <option value="major">Major (Breaking API Changes)</option>
+              <option value="hotfix">Emergency Hotfix</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Release Title</label>
+          <input type="text" id="release-title-input" class="form-input" placeholder="e.g. Q4 Real-time Settlement Optimization">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Target Initial Environment</label>
+          <select id="release-target-env-select" class="form-select">
+            <option value="staging">Staging</option>
+            <option value="prod-us" selected>Production (US-East)</option>
+            <option value="prod-eu">Production (EU-Central)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Executive Highlights</label>
+          <textarea id="release-highlights-input" class="form-textarea" rows="2" placeholder="Summary of changes included in this release..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Database Migration Script (Optional)</label>
+          <input type="text" id="release-db-migration-input" class="form-input" placeholder="e.g. 20261120_add_settlement_indexes.sql">
+          <div class="form-help">DB schema migrations trigger automated high-risk CAB review.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCreateRelease()">Save Release Plan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Emergency Rollback -->
+  <div id="modal-rollback" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--accent-rose);">🚨 Emergency Rollback Circuit Breaker</h3>
+        <button class="modal-close" onclick="closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Executing an emergency rollback immediately diverts 100% ingress traffic to the previous stable baseline, drains pending connections, and halts active rollout pipelines.
+        </p>
+
+        <input type="hidden" id="rollback-dep-id">
+
+        <div class="form-group">
+          <label class="form-label">Rollback Root Cause / Justification</label>
+          <input type="text" id="rollback-reason-input" class="form-input" placeholder="e.g. Elevated 5xx rate on checkout route / Memory leak">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModals()">Abort</button>
+        <button class="btn btn-danger" onclick="submitRollback()">Execute Instant Rollback</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Freeze Environment -->
+  <div id="modal-freeze" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="freeze-modal-title">❄️ Toggle Environment Deployment Freeze</h3>
+        <button class="modal-close" onclick="closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="freeze-env-id">
+        <div id="freeze-reason-group" class="form-group">
+          <label class="form-label">Lock Reason / Window Justification</label>
+          <input type="text" id="freeze-reason-input" class="form-input" placeholder="e.g. Holiday Season Freeze / Scheduled DB Maintenance">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+        <button id="freeze-submit-btn" class="btn btn-warning" onclick="submitFreeze()">Confirm Lock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Release Notes Generator -->
+  <div id="modal-notes" class="modal-overlay">
+    <div class="modal" style="max-width: 750px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📑 Automated Release Notes &amp; Changelog</h3>
+        <button class="modal-close" onclick="closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="notes-rendered-view" class="notes-preview">
+          <!-- Populated by JS -->
+        </div>
+        <textarea id="notes-markdown-raw" style="display: none;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="copyNotesToClipboard()">📋 Copy Markdown</button>
+        <button class="btn btn-primary" onclick="closeModals()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/portal.js"></script>
+</body>
+</html>

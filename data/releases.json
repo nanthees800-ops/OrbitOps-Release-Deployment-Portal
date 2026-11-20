@@ -1,0 +1,214 @@
+[
+  {
+    "id": "rel-2026-11-20-01",
+    "version": "v3.4.0",
+    "title": "Q4 Payment Gateway Resilience & Biometric Auth Rollout",
+    "serviceId": "svc-payments",
+    "serviceName": "Payment Gateway Bridge",
+    "status": "approved",
+    "releaseType": "minor",
+    "riskLevel": "high",
+    "targetEnvironment": "prod-us",
+    "author": "Elena Rostova",
+    "authorEmail": "elena.rostova@orbitcorp.internal",
+    "scheduledDate": "2026-11-20T17:30:00Z",
+    "cabStatus": "approved",
+    "cabApprovalId": "cab-4081",
+    "commitsCount": 18,
+    "pullRequests": [
+      {
+        "id": "#1042",
+        "title": "Add Stripe and Adyen multi-acquirer fallback routing",
+        "author": "dchen",
+        "mergeDate": "2026-11-19"
+      },
+      {
+        "id": "#1049",
+        "title": "Optimize Redis distributed idempotent token locking (P99 -42ms)",
+        "author": "erostova",
+        "mergeDate": "2026-11-20"
+      },
+      {
+        "id": "#1055",
+        "title": "Upgrade 3D-Secure 2.2 biometric transaction flow for PSD3 compliance",
+        "author": "mkowalski",
+        "mergeDate": "2026-11-20"
+      }
+    ],
+    "releaseNotes": {
+      "highlights": "Enterprise zero-downtime multi-acquirer failover engine with sub-80ms fallback guarantee and full PSD3 biometric authentication.",
+      "features": [
+        "Dynamic multi-acquirer intelligent routing based on real-time bank settlement health.",
+        "Zero-lock partitioned PostgreSQL migration for token transaction ledger.",
+        "Instant 3D-Secure biometric verification bridge for mobile wallet payments."
+      ],
+      "bugFixes": [
+        "Resolved concurrent webhook duplicate settlement race condition during network split (BUG-4912).",
+        "Fixed exponential backoff jitter on webhook retry storm."
+      ],
+      "breakingChanges": [],
+      "databaseMigrations": [
+        "20261120_create_acquirer_routing_rules.sql (backward compatible, lock-free)",
+        "20261120_add_biometric_auth_audit_hash.sql"
+      ]
+    },
+    "checks": {
+      "sastScan": {
+        "status": "passed",
+        "score": "0 Critical / 0 High",
+        "tool": "SonarQube & Snyk SCA"
+      },
+      "e2eTests": {
+        "status": "passed",
+        "passed": 512,
+        "failed": 0,
+        "duration": "3m 44s"
+      },
+      "perfBaseline": {
+        "status": "passed",
+        "p99Diff": "-18ms improvement",
+        "baselineP99": "84ms"
+      },
+      "dbMigrationDryRun": {
+        "status": "passed",
+        "duration": "1.2s execution time (Lock-free)"
+      },
+      "containerSignature": {
+        "status": "passed",
+        "verified": true,
+        "signer": "Cosign / Orbit KMS"
+      }
+    },
+    "createdAt": "2026-11-20T09:15:00Z"
+  },
+  {
+    "id": "rel-2026-11-19-02",
+    "version": "v2.18.2",
+    "title": "OAuth2 Token Cache Invalidation & Session Revocation Fast-Track",
+    "serviceId": "svc-auth",
+    "serviceName": "Auth & OAuth2 Identity Token Server",
+    "status": "released",
+    "releaseType": "patch",
+    "riskLevel": "low",
+    "targetEnvironment": "prod-us",
+    "author": "Marcus Vance",
+    "authorEmail": "marcus.vance@orbitcorp.internal",
+    "scheduledDate": "2026-11-19T14:00:00Z",
+    "cabStatus": "approved",
+    "commitsCount": 6,
+    "pullRequests": [
+      {
+        "id": "#892",
+        "title": "Implement Redis PubSub session revocation cluster broadcast",
+        "author": "mvance",
+        "mergeDate": "2026-11-19"
+      }
+    ],
+    "releaseNotes": {
+      "highlights": "Sub-millisecond global token revocation across multi-region edge nodes.",
+      "features": [
+        "Redis cluster token invalidation pubsub channel."
+      ],
+      "bugFixes": [
+        "Fixed expired refresh token grace period boundary condition."
+      ],
+      "breakingChanges": [],
+      "databaseMigrations": []
+    },
+    "checks": {
+      "sastScan": {
+        "status": "passed",
+        "score": "0 Critical",
+        "tool": "Snyk"
+      },
+      "e2eTests": {
+        "status": "passed",
+        "passed": 310,
+        "failed": 0,
+        "duration": "2m 10s"
+      },
+      "perfBaseline": {
+        "status": "passed",
+        "p99Diff": "0ms",
+        "baselineP99": "28ms"
+      },
+      "dbMigrationDryRun": {
+        "status": "passed",
+        "duration": "N/A"
+      },
+      "containerSignature": {
+        "status": "passed",
+        "verified": true,
+        "signer": "Cosign"
+      }
+    },
+    "createdAt": "2026-11-19T11:00:00Z"
+  },
+  {
+    "id": "rel-2026-11-18-03",
+    "version": "v4.1.0-alpha",
+    "title": "Global Checkout Distributed Sagas Engine",
+    "serviceId": "svc-orders",
+    "serviceName": "Order Routing & Orchestration Engine",
+    "status": "in_review",
+    "releaseType": "minor",
+    "riskLevel": "critical",
+    "targetEnvironment": "staging",
+    "author": "Sarah Jenkins",
+    "authorEmail": "sarah.jenkins@orbitcorp.internal",
+    "scheduledDate": "2026-11-21T10:00:00Z",
+    "cabStatus": "pending",
+    "commitsCount": 34,
+    "pullRequests": [
+      {
+        "id": "#412",
+        "title": "Implement Temporal IO distributed saga pattern for multi-item orders",
+        "author": "sjenkins",
+        "mergeDate": "2026-11-18"
+      }
+    ],
+    "releaseNotes": {
+      "highlights": "Migrates order workflow state machine to idempotent distributed sagas with automatic compensating transactions.",
+      "features": [
+        "Compensating transactions for failed payments and inventory reservation rollback."
+      ],
+      "bugFixes": [
+        "Fixed zombie order stuck in processing when payment provider drops TCP connection."
+      ],
+      "breakingChanges": [
+        "API /v1/orders/create deprecated in favor of /v2/orders/checkout-session"
+      ],
+      "databaseMigrations": [
+        "20261118_temporal_workflow_executions.sql"
+      ]
+    },
+    "checks": {
+      "sastScan": {
+        "status": "passed",
+        "score": "0 Critical / 1 Medium",
+        "tool": "SonarQube"
+      },
+      "e2eTests": {
+        "status": "passed",
+        "passed": 724,
+        "failed": 0,
+        "duration": "6m 12s"
+      },
+      "perfBaseline": {
+        "status": "passed",
+        "p99Diff": "-22ms",
+        "baselineP99": "110ms"
+      },
+      "dbMigrationDryRun": {
+        "status": "passed",
+        "duration": "3.4s"
+      },
+      "containerSignature": {
+        "status": "passed",
+        "verified": true,
+        "signer": "Cosign"
+      }
+    },
+    "createdAt": "2026-11-18T16:00:00Z"
+  }
+]

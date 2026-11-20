@@ -1,0 +1,94 @@
+{
+  "svc-payments": [
+    {
+      "key": "PORT",
+      "staging": "8080",
+      "prod-us": "8080",
+      "prod-eu": "8080",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "DB_POOL_MAX_CONNECTIONS",
+      "staging": "25",
+      "prod-us": "150",
+      "prod-eu": "120",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "STRIPE_API_ENDPOINT",
+      "staging": "https://api.sandbox.stripe.com",
+      "prod-us": "https://api.stripe.com",
+      "prod-eu": "https://api.stripe.com",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "ACQUIRER_TIMEOUT_MS",
+      "staging": "2500",
+      "prod-us": "800",
+      "prod-eu": "800",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "CANARY_TRAFFIC_RATIO",
+      "staging": "0.50",
+      "prod-us": "0.10",
+      "prod-eu": "0.00",
+      "isSecret": false,
+      "status": "DRIFT_DETECTED"
+    },
+    {
+      "key": "PAYMENT_HMAC_SECRET",
+      "staging": "●●●●●●●● (sha256: 4f1a..)",
+      "prod-us": "●●●●●●●● (sha256: 9b2c..)",
+      "prod-eu": "●●●●●●●● (sha256: 9b2c..)",
+      "isSecret": true,
+      "status": "SECURE_MATCH"
+    },
+    {
+      "key": "ENABLE_BIOMETRIC_3DS",
+      "staging": "true",
+      "prod-us": "true",
+      "prod-eu": "false",
+      "isSecret": false,
+      "status": "DRIFT_DETECTED"
+    },
+    {
+      "key": "FEATURE_FALLBACK_ROUTING",
+      "staging": "true",
+      "prod-us": "false",
+      "prod-eu": "false",
+      "isSecret": false,
+      "status": "DRIFT_DETECTED"
+    }
+  ],
+  "svc-auth": [
+    {
+      "key": "JWT_EXPIRATION_SECONDS",
+      "staging": "3600",
+      "prod-us": "900",
+      "prod-eu": "900",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "REDIS_CLUSTER_URL",
+      "staging": "redis://staging-cache.orbit",
+      "prod-us": "redis://prod-us-cache.orbit",
+      "prod-eu": "redis://prod-eu-cache.orbit",
+      "isSecret": false,
+      "status": "MATCHED"
+    },
+    {
+      "key": "PRIVATE_KEY_CERT",
+      "staging": "●●●●●●●● (sha256: 1a8c..)",
+      "prod-us": "●●●●●●●● (sha256: 8e4f..)",
+      "prod-eu": "●●●●●●●● (sha256: 8e4f..)",
+      "isSecret": true,
+      "status": "SECURE_MATCH"
+    }
+  ]
+}

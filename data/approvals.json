@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cab-4081",
+    "releaseId": "rel-2026-11-20-01",
+    "title": "v3.4.0 Deployment to Production (US-East)",
+    "service": "Payment Gateway Bridge",
+    "targetEnv": "prod-us",
+    "requestedBy": "Elena Rostova",
+    "riskLevel": "HIGH",
+    "riskScore": 78,
+    "riskFactors": [
+      "Affects Tier-0 critical transaction path",
+      "Includes relational database schema alterations (backward compatible)",
+      "High customer traffic volume (Est. 4,200 req/sec)"
+    ],
+    "status": "APPROVED",
+    "approvalsRequired": 2,
+    "currentApprovals": [
+      {
+        "role": "Release Engineering Lead",
+        "approver": "Marcus Vance",
+        "timestamp": "2026-11-20T10:45:00Z",
+        "comment": "Verified test reports, lock-free migration scripts, and automated rollback triggers."
+      },
+      {
+        "role": "Head of SRE Operations",
+        "approver": "Devon Reed",
+        "timestamp": "2026-11-20T11:20:00Z",
+        "comment": "On-call notified. Canary rollout schedule approved for 17:30 UTC."
+      }
+    ],
+    "pendingRoles": [],
+    "createdAt": "2026-11-20T09:30:00Z"
+  },
+  {
+    "id": "cab-4082",
+    "releaseId": "rel-2026-11-18-03",
+    "title": "v4.1.0 Distributed Sagas Engine Staging Cutover",
+    "service": "Order Routing & Orchestration Engine",
+    "targetEnv": "staging",
+    "requestedBy": "Sarah Jenkins",
+    "riskLevel": "MEDIUM",
+    "riskScore": 54,
+    "riskFactors": [
+      "State machine architectural overhaul",
+      "API contract version deprecation"
+    ],
+    "status": "PENDING",
+    "approvalsRequired": 1,
+    "currentApprovals": [],
+    "pendingRoles": [
+      "QA Architecture Lead"
+    ],
+    "createdAt": "2026-11-20T12:00:00Z"
+  }
+]

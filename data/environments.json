@@ -1,0 +1,116 @@
+[
+  {
+    "id": "dev",
+    "name": "Development",
+    "tier": "development",
+    "region": "us-east-1",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-dev-cluster-us",
+    "healthScore": 99.9,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 38,
+      "memoryUsage": 54,
+      "errorRate": 0.04,
+      "p99LatencyMs": 42
+    }
+  },
+  {
+    "id": "qa",
+    "name": "QA & Integration",
+    "tier": "testing",
+    "region": "us-east-1",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-qa-cluster-01",
+    "healthScore": 99.4,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 45,
+      "memoryUsage": 62,
+      "errorRate": 0.12,
+      "p99LatencyMs": 68
+    }
+  },
+  {
+    "id": "staging",
+    "name": "Staging (Pre-Prod)",
+    "tier": "staging",
+    "region": "us-west-2",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-staging-cluster-02",
+    "healthScore": 99.8,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 52,
+      "memoryUsage": 68,
+      "errorRate": 0.02,
+      "p99LatencyMs": 76
+    }
+  },
+  {
+    "id": "canary",
+    "name": "Canary Fleet (10% Traffic)",
+    "tier": "canary",
+    "region": "us-east-1",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-prod-canary-slice",
+    "healthScore": 100,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 41,
+      "memoryUsage": 58,
+      "errorRate": 0.01,
+      "p99LatencyMs": 79
+    }
+  },
+  {
+    "id": "prod-us",
+    "name": "Production (US-East)",
+    "tier": "production",
+    "region": "us-east-1",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-prod-us-primary",
+    "healthScore": 99.98,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 64,
+      "memoryUsage": 73,
+      "errorRate": 0.01,
+      "p99LatencyMs": 82
+    }
+  },
+  {
+    "id": "prod-eu",
+    "name": "Production (EU-Central)",
+    "tier": "production",
+    "region": "eu-central-1",
+    "status": "healthy",
+    "isFrozen": false,
+    "freezeReason": "",
+    "frozenBy": "",
+    "cluster": "k8s-prod-eu-dr",
+    "healthScore": 99.95,
+    "activeDeploymentsCount": 0,
+    "metrics": {
+      "cpuUsage": 58,
+      "memoryUsage": 69,
+      "errorRate": 0.01,
+      "p99LatencyMs": 91
+    }
+  }
+]

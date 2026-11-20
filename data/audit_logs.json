@@ -1,0 +1,32 @@
+[
+  {
+    "id": "aud-1",
+    "timestamp": "2026-11-20T11:20:00Z",
+    "action": "CAB_APPROVAL_GRANTED",
+    "actor": "devon.reed@orbitcorp.internal",
+    "target": "rel-2026-11-20-01 (v3.4.0)",
+    "environment": "prod-us",
+    "details": "Approved Change Advisory Board gate for Payment Gateway Bridge",
+    "status": "SUCCESS"
+  },
+  {
+    "id": "aud-2",
+    "timestamp": "2026-11-20T10:45:00Z",
+    "action": "CAB_APPROVAL_GRANTED",
+    "actor": "marcus.vance@orbitcorp.internal",
+    "target": "rel-2026-11-20-01 (v3.4.0)",
+    "environment": "prod-us",
+    "details": "Approved Change Advisory Board gate for Payment Gateway Bridge",
+    "status": "SUCCESS"
+  },
+  {
+    "id": "aud-3",
+    "timestamp": "2026-11-19T14:18:24Z",
+    "action": "DEPLOYMENT_COMPLETED",
+    "actor": "marcus.vance@orbitcorp.internal",
+    "target": "dep-9821 (svc-auth v2.18.2)",
+    "environment": "prod-us",
+    "details": "Blue/Green deployment completed successfully without error spikes",
+    "status": "SUCCESS"
+  }
+]

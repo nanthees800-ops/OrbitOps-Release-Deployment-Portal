@@ -1,0 +1,144 @@
+[
+  {
+    "id": "dep-9821",
+    "releaseId": "rel-2026-11-19-02",
+    "serviceId": "svc-auth",
+    "serviceName": "Auth & OAuth2 Identity Token Server",
+    "version": "v2.18.2",
+    "previousVersion": "v2.18.1",
+    "environment": "prod-us",
+    "strategy": "blue-green",
+    "status": "success",
+    "startedAt": "2026-11-19T14:10:00Z",
+    "completedAt": "2026-11-19T14:18:24Z",
+    "duration": "8m 24s",
+    "deployedBy": "Marcus Vance",
+    "canaryTrafficPercent": 100,
+    "currentStageIndex": 6,
+    "stages": [
+      {
+        "name": "Pre-flight & Quota Verification",
+        "status": "completed",
+        "duration": "14s"
+      },
+      {
+        "name": "Artifact Signature & SBOM Validation",
+        "status": "completed",
+        "duration": "22s"
+      },
+      {
+        "name": "Deploy Green Cluster Pods (12/12 Replicas)",
+        "status": "completed",
+        "duration": "2m 14s"
+      },
+      {
+        "name": "Health Readiness Probes & Synthetic Pings",
+        "status": "completed",
+        "duration": "1m 30s"
+      },
+      {
+        "name": "Switch Ingress Router (Blue -> Green 100%)",
+        "status": "completed",
+        "duration": "45s"
+      },
+      {
+        "name": "Post-deploy Soak & SLI Analysis",
+        "status": "completed",
+        "duration": "2m 30s"
+      },
+      {
+        "name": "Tear Down Blue Cluster Standby",
+        "status": "completed",
+        "duration": "49s"
+      }
+    ],
+    "logs": [
+      {
+        "timestamp": "2026-11-19T14:10:01Z",
+        "level": "INFO",
+        "message": "Deployment triggered by user marcus.vance"
+      },
+      {
+        "timestamp": "2026-11-19T14:10:15Z",
+        "level": "INFO",
+        "message": "Cosign verified container image sha256:8b4e72a..."
+      },
+      {
+        "timestamp": "2026-11-19T14:12:30Z",
+        "level": "INFO",
+        "message": "All 12 Green pods reported HTTP 200 /healthz"
+      },
+      {
+        "timestamp": "2026-11-19T14:14:00Z",
+        "level": "INFO",
+        "message": "Ingress controller shifted 100% live traffic to Green"
+      },
+      {
+        "timestamp": "2026-11-19T14:18:24Z",
+        "level": "INFO",
+        "message": "Deployment successfully verified without errors. Zero dropped connections."
+      }
+    ],
+    "metricsSnapshot": {
+      "errorRate": "0.00%",
+      "p99Latency": "24ms",
+      "cpuUtil": "46%"
+    }
+  },
+  {
+    "id": "dep-9820",
+    "releaseId": "rel-2026-11-19-01",
+    "serviceId": "svc-inventory",
+    "serviceName": "Real-time Inventory Ledger",
+    "version": "v1.8.3",
+    "previousVersion": "v1.8.2",
+    "environment": "staging",
+    "strategy": "rolling",
+    "status": "success",
+    "startedAt": "2026-11-19T11:00:00Z",
+    "completedAt": "2026-11-19T11:06:12Z",
+    "duration": "6m 12s",
+    "deployedBy": "Carlos Mendoza",
+    "canaryTrafficPercent": 100,
+    "currentStageIndex": 4,
+    "stages": [
+      {
+        "name": "Pre-flight Validation",
+        "status": "completed",
+        "duration": "12s"
+      },
+      {
+        "name": "Rolling Pod Replacement (25% step)",
+        "status": "completed",
+        "duration": "3m 15s"
+      },
+      {
+        "name": "DB Connection Pool Health Probe",
+        "status": "completed",
+        "duration": "1m 10s"
+      },
+      {
+        "name": "Traffic Drainage & Final Verification",
+        "status": "completed",
+        "duration": "1m 35s"
+      }
+    ],
+    "logs": [
+      {
+        "timestamp": "2026-11-19T11:00:00Z",
+        "level": "INFO",
+        "message": "Starting rolling deployment of inventory-ledger v1.8.3"
+      },
+      {
+        "timestamp": "2026-11-19T11:06:12Z",
+        "level": "INFO",
+        "message": "Rolling deployment complete on staging cluster."
+      }
+    ],
+    "metricsSnapshot": {
+      "errorRate": "0.01%",
+      "p99Latency": "34ms",
+      "cpuUtil": "51%"
+    }
+  }
+]

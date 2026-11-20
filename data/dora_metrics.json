@@ -1,0 +1,97 @@
+{
+  "summary": {
+    "deploymentFrequency": {
+      "value": 16.4,
+      "unit": "deploys / week",
+      "tier": "Elite",
+      "target": "> 7 / week"
+    },
+    "leadTimeForChanges": {
+      "value": 3.2,
+      "unit": "hours",
+      "tier": "Elite",
+      "target": "< 24 hours"
+    },
+    "changeFailureRate": {
+      "value": 1.4,
+      "unit": "%",
+      "tier": "Elite",
+      "target": "< 5%"
+    },
+    "meanTimeToRecovery": {
+      "value": 12.8,
+      "unit": "minutes",
+      "tier": "Elite",
+      "target": "< 60 mins"
+    }
+  },
+  "weeklyTrends": [
+    {
+      "week": "W39",
+      "deploys": 12,
+      "leadTimeHours": 4.8,
+      "failureRatePct": 2.1,
+      "mttrMins": 18.4
+    },
+    {
+      "week": "W40",
+      "deploys": 14,
+      "leadTimeHours": 4.2,
+      "failureRatePct": 1.8,
+      "mttrMins": 15.2
+    },
+    {
+      "week": "W41",
+      "deploys": 15,
+      "leadTimeHours": 3.9,
+      "failureRatePct": 1.9,
+      "mttrMins": 14.6
+    },
+    {
+      "week": "W42",
+      "deploys": 13,
+      "leadTimeHours": 3.6,
+      "failureRatePct": 1.5,
+      "mttrMins": 13.5
+    },
+    {
+      "week": "W43",
+      "deploys": 17,
+      "leadTimeHours": 3.4,
+      "failureRatePct": 1.2,
+      "mttrMins": 12.9
+    },
+    {
+      "week": "W44",
+      "deploys": 16,
+      "leadTimeHours": 3.2,
+      "failureRatePct": 1.4,
+      "mttrMins": 12.8
+    }
+  ],
+  "leadTimeBreakdown": {
+    "codingTime": "1.2h",
+    "prReview": "0.8h",
+    "ciBuildTests": "0.4h",
+    "stagingSoak": "0.5h",
+    "productionRollout": "0.3h"
+  },
+  "failureCauses": [
+    {
+      "cause": "Unhandled API Edge Case",
+      "percentage": 42
+    },
+    {
+      "cause": "Database Connection Pool Exhaustion",
+      "percentage": 28
+    },
+    {
+      "cause": "Config Key Mismatch / Drift",
+      "percentage": 18
+    },
+    {
+      "cause": "Third-party Gateway Latency Spike",
+      "percentage": 12
+    }
+  ]
+}

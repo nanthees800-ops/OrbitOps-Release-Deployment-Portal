@@ -1,0 +1,131 @@
+[
+  {
+    "id": "svc-payments",
+    "name": "Payment Gateway Bridge",
+    "slug": "payment-gateway",
+    "tier": "Tier-0 (Mission Critical)",
+    "team": "Core Payments & Ledger",
+    "lead": "Elena Rostova (Staff SRE)",
+    "repo": "github.com/orbitcorp/payment-gateway",
+    "language": "Go 1.22 / gRPC",
+    "defaultStrategy": "canary",
+    "dependencies": [
+      "svc-auth",
+      "svc-vault"
+    ],
+    "currentVersions": {
+      "dev": "v3.4.1-rc1",
+      "qa": "v3.4.0",
+      "staging": "v3.4.0",
+      "canary": "v3.4.0",
+      "prod-us": "v3.3.8",
+      "prod-eu": "v3.3.8"
+    }
+  },
+  {
+    "id": "svc-auth",
+    "name": "Auth & OAuth2 Identity Token Server",
+    "slug": "auth-service",
+    "tier": "Tier-0 (Mission Critical)",
+    "team": "Security & Identity",
+    "lead": "Marcus Vance (Principal Eng)",
+    "repo": "github.com/orbitcorp/auth-service",
+    "language": "Rust / Actix-web",
+    "defaultStrategy": "blue-green",
+    "dependencies": [],
+    "currentVersions": {
+      "dev": "v2.19.0",
+      "qa": "v2.18.2",
+      "staging": "v2.18.2",
+      "canary": "v2.18.1",
+      "prod-us": "v2.18.1",
+      "prod-eu": "v2.18.1"
+    }
+  },
+  {
+    "id": "svc-orders",
+    "name": "Order Routing & Orchestration Engine",
+    "slug": "order-orchestrator",
+    "tier": "Tier-1 (High Impact)",
+    "team": "Commerce Fulfilment",
+    "lead": "Sarah Jenkins (Tech Lead)",
+    "repo": "github.com/orbitcorp/order-service",
+    "language": "TypeScript / Node.js 22",
+    "defaultStrategy": "canary",
+    "dependencies": [
+      "svc-payments",
+      "svc-inventory"
+    ],
+    "currentVersions": {
+      "dev": "v4.1.0-alpha",
+      "qa": "v4.0.2",
+      "staging": "v4.0.1",
+      "canary": "v4.0.1",
+      "prod-us": "v4.0.0",
+      "prod-eu": "v4.0.0"
+    }
+  },
+  {
+    "id": "svc-inventory",
+    "name": "Real-time Inventory Ledger",
+    "slug": "inventory-ledger",
+    "tier": "Tier-1 (High Impact)",
+    "team": "Supply Chain Engineering",
+    "lead": "Carlos Mendoza",
+    "repo": "github.com/orbitcorp/inventory-service",
+    "language": "Java 21 / Spring Boot 3",
+    "defaultStrategy": "rolling",
+    "dependencies": [],
+    "currentVersions": {
+      "dev": "v1.8.4",
+      "qa": "v1.8.3",
+      "staging": "v1.8.3",
+      "canary": "v1.8.2",
+      "prod-us": "v1.8.2",
+      "prod-eu": "v1.8.2"
+    }
+  },
+  {
+    "id": "svc-web",
+    "name": "Customer Web Frontend (Next.js SSR)",
+    "slug": "web-portal",
+    "tier": "Tier-1 (High Impact)",
+    "team": "Storefront Experience",
+    "lead": "Aiko Tanaka",
+    "repo": "github.com/orbitcorp/web-storefront",
+    "language": "Next.js 15 / React 19",
+    "defaultStrategy": "blue-green",
+    "dependencies": [
+      "svc-orders",
+      "svc-auth"
+    ],
+    "currentVersions": {
+      "dev": "v5.12.0",
+      "qa": "v5.11.2",
+      "staging": "v5.11.0",
+      "canary": "v5.11.0",
+      "prod-us": "v5.10.4",
+      "prod-eu": "v5.10.4"
+    }
+  },
+  {
+    "id": "svc-notifications",
+    "name": "Multi-Channel Push & Event Dispatcher",
+    "slug": "notification-worker",
+    "tier": "Tier-2 (Standard)",
+    "team": "Engagement & Comms",
+    "lead": "Devon Reed",
+    "repo": "github.com/orbitcorp/notification-engine",
+    "language": "Python 3.12 / FastAPI",
+    "defaultStrategy": "rolling",
+    "dependencies": [],
+    "currentVersions": {
+      "dev": "v2.4.0",
+      "qa": "v2.3.9",
+      "staging": "v2.3.9",
+      "canary": "v2.3.8",
+      "prod-us": "v2.3.8",
+      "prod-eu": "v2.3.8"
+    }
+  }
+]
